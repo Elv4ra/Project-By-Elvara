@@ -1,0 +1,8 @@
+<div id="myModal" class="modal" th:fragment="modalProductAdding">
+    <form class="modal-content styledForm" th:action="@{/addToCart}" method="post">
+        <input type="hidden" name="id" th:value="${product.id}"/>
+        <label class="field">Кількість одиниць товару:</label><input type="number" name="amount" step=1 th:min=1  th:max="${product.amount} > 10 ? 10 : ${product.amount}" value=1 required th:attr="onchange=|changeTotal(this, ${product.price})|">
+        <label class="field">Всього: <text id="total" th:text="${#numbers.formatDecimal(product.price, 1, 2)}"></text>&#8372;</label>
+        <input type="submit" value="Додати до кошика">
+    </form>
+</div>

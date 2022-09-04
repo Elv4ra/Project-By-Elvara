@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html lang="uk" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Товари</title>
+        <link th:href="@{/resources/css/main.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/header.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/filterForm.css}" rel="stylesheet">
+        <script th:src="@{/resources/js/fieldValidation.js}"></script>
+        <script th:if="${message}" th:inline="javascript">
+            var message = /*[[${message}]]*/;
+            alert(message);
+        </script>
+    </head>
+    <body>
+        <div th:replace="fragments/Header.html :: header"></div>
+        <div class="container">
+            <h2>Товари</h2>
+            <form class="filterForm" th:action="@{/products}" method="get" name="myForm">
+                <select name="category" id="category" size=1 required onfocus="dropStyle(this)">
+                    <option value="" disabled hidden th:selected="${category == null}">Оберіть категорію</option>
+                    <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Category).BAKERY}" th:selected="${category == T(com.ProjectByElvara.entities.additionalClasses.Category).BAKERY}">Хлібобулочні вироби</option>
+                    <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Category).FRUIT_VEGETABLES}" th:selected="${category == T(com.ProjectByElvara.entities.additionalClasses.Category).FRUIT_VEGETABLES}">Овочі та фрукти</option>
+                    <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Category).FROZEN_FOOD}" th:selected="${category == T(com.ProjectByElvara.entities.additionalClasses.Category).FROZEN_FOOD}">Заморожена продукція</option>
+                    <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Category).DAIRY_PRODUCTS}" th:selected="${category == T(com.ProjectByElvara.entities.additionalClasses.Category).DAIRY_PRODUCTS}">Молочна продукція</option>
+                    <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Category).MEAT}" th:selected="${category == T(com.ProjectByElvara.entities.additionalClasses.Category).MEAT}">М&#39;ясо</option>
+                    <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Category).ALCOHOL}" th:selected="${category == T(com.ProjectByElvara.entities.additionalClasses.Category).ALCOHOL}">Алкоголь</option>
+                </select>
+                <input type="submit" value="Фільтрувати" onclick="validateFilter(document.myForm.category, 'Оберіть категорію!')">
+                <a th:href="@{/products}">
+                    <input type="button" value="Скинути">
+                </a>
+            </form>
+            <a th:href="@{/addProduct}" sec:authorize="hasRole('ROLE_ADMIN')">
+                <div class="navButton"  tabindex="0">
+                    <label>Додати товар</label>
+                </div>
+            </a>
+            <div class="notFound" th:if="${#lists.isEmpty(products)}">
+                <h3>Товарів не знайдено</h3>
+            </div>
+            <div th:unless="${#lists.isEmpty(products)}">
+                <a th:if="${(product.amount > 0 and product.status == T(com.ProjectByElvara.entities.additionalClasses.ProductStatus).ACTIVE) or #authorization.expression('hasRole(''ROLE_ADMIN'')')}" th:href="@{/product(id=${product.id})}" th:each="product : ${products}">
+                    <div class="entityContainer"  tabindex="0">
+                        <p>Товар: <label th:text="${product.productName}"></label></p>
+                        <p th:if="${product.trademark != ''}">Торгова марка: <label th:text="${product.trademark}"></label></p>
+                        <p>Ціна: <label th:text="${#numbers.formatDecimal(product.price, 1, 2)} + &#8372;"></label></p>
+                        <p>Категорія: <label th:text="${product.category.label}"></label></p>
+                        <p>Об'єм: <label th:text="${product.size}"></label></p>
+                        <p sec:authorize="hasRole('ROLE_ADMIN')">Кількість: <label th:text="${product.amount}"></label></p>
+                        <div id="absentProduct" th:if="${product.amount == 0 or product.status == T(com.ProjectByElvara.entities.additionalClasses.ProductStatus).ARCHIVED}">
+                            <p th:if="${product.amount == 0}">Товар закінчився на складі</p>
+                            <p th:if="${product.status == T(com.ProjectByElvara.entities.additionalClasses.ProductStatus).ARCHIVED}">Товар заархівовано</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </body>
+</html>

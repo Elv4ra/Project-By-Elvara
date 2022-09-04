@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Реєстрація</title>
+        <link th:href="@{/resources/css/main.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/header.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/formStyling.css}" rel="stylesheet">
+        <script th:src="@{/resources/js/fieldValidation.js}"></script>
+        <script th:if="${message}" th:inline="javascript">
+            var message = /*[[${message}]]*/;
+            alert(message);
+        </script>
+    </head>
+    <body>
+        <div th:replace="fragments/Header.html :: header"></div>
+        <div class="container">
+            <form class="styledForm" th:action="@{/signup}" th:object="${newUser}" method="post">
+                <h2>Реєстрація</h2>
+                <label class="field">Пошта</label><input th:field="*{email}" autofocus="autofocus" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" onblur="validate(this, 'Некоректний формат пошти')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)" placeholder="kostya1978@gmail.com">
+                <label class="field">Пароль</label><input type="password" th:field="*{userPassword}" required pattern="[a-zA-Z0-9.!@#$%^&*_]+$" onblur="validate(this, 'Пароль має складатися з латинських літер, цифр та символів .!@#$%^&*_')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)" placeholder="Ввеідть пароль">
+                <label class="field">Ім&#39;я</label><input th:field="*{firstName}" required pattern="[a-zA-Zа-яёА-ЯЁіїєІЇЄ']+$" onblur="validate(this, 'Ім`я не має містити цифр, пробілів чи спеціальних символів')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)" placeholder="Введіть ім'я кирилицею">
+                <label class="field">Прізвище</label><input th:field="*{lastName}" required pattern="[a-zA-Zа-яёА-ЯЁіїєІЇЄ']+$" onblur="validate(this, 'Прізвище не має містити цифр, пробілів чи спеціальних символів')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)" placeholder="Введіть прізвище кирилицею">
+                <label class="field">Номер телефону</label><input th:field="*{phone}" required pattern="^\+?(\d{10}|\d{12})$" onblur="validate(this, 'Номер телефону має формат +38ХХХХХХХХХ')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)" placeholder="+380XXXXXXXXX">
+                <input type="hidden" id="userRole" name="userRole" th:value="${T(com.ProjectByElvara.entities.additionalClasses.UserRole).ROLE_CLIENT}" >
+                <input type="submit" value="Зареєструватися">
+            </form>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,33 @@
+table, th, td {
+    border: 2px solid rgba(0, 150, 255, 0.5);
+    padding: 5px;
+    text-align: left;
+    font-size: 0.9em;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 15px;
+}
+th, caption {
+    color: rgba(255, 0, 200, 1);
+}
+.orderContainer {
+    padding-left: 5px;
+}
+.orderContainer p {
+    color: rgba(255, 0, 200, 1);
+}
+.orderContainer label {
+    color: rgba(0, 0, 0, 1);
+}
+.price {
+    text-align: right;
+}
+.center {
+    text-align: center;
+}
+.bold {
+    font-weight: bold;
+}

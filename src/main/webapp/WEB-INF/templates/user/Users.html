@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Користувачі</title>
+        <link th:href="@{/resources/css/main.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/header.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/filterForm.css}" rel="stylesheet">
+        <script th:src="@{/resources/js/fieldValidation.js}"></script>
+        <script th:if="${message}" th:inline="javascript">
+            var message = /*[[${message}]]*/;
+            alert(message);
+        </script>
+    </head>
+    <body>
+        <div th:replace="fragments/Header.html :: header"></div>
+        <div class="container">
+            <h2>Користувачі</h2>
+            <form class="filterForm" th:action="@{/users}" method="get" name="myForm">
+                <input name="emailPattern" th:if="${emailPattern == null}" placeholder="Пошук за поштою" required onfocus="dropStyle(this)">
+                <input name="emailPattern" th:unless="${emailPattern == null}" th:value="${emailPattern}" required onfocus="dropStyle(this)">
+                <input type="submit" value="Знайти" onclick="validateFilter(document.myForm.emailPattern, 'Введіть пошту користувача!')">
+                <a th:href="@{/products}">
+                    <input type="button" value="Скинути">
+                </a>
+            </form>
+            <div class="notFound" th:if="${#lists.isEmpty(users)}">
+                <h3>Користувачів не знайдено</h3>
+            </div>
+            <div th:unless="${#lists.isEmpty(users)}">
+                <a th:href="@{/user(id=${user.id})}" th:each="user : ${users}">
+                    <div class="entityContainer"  tabindex="0">
+                        <p>Пошта: <label th:text="${user.email}"></label></p>
+                        <p>Ім&#39;я: <label th:text="${user.firstName}"></label></p>
+                        <p>Прізвище: <label th:text="${user.lastName}"></label></p>
+                        <p>Номер телефону: <label th:text="${user.phone}"></label></p>
+                        <p>Тип користувача: <label th:text="${user.userRole.label}"></label></p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </body>
+</html>

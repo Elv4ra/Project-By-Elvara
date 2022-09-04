@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Додати товар на склад</title>
+        <link th:href="@{/resources/css/main.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/header.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/formStyling.css}" rel="stylesheet">
+        <script th:src="@{/resources/js/fieldValidation.js}"></script>
+        <script th:if="${message}" th:inline="javascript">
+            var message = /*[[${message}]]*/;
+            alert(message);
+        </script>
+    </head>
+    <body>
+        <div th:replace="fragments/Header.html :: header"></div>
+        <div class="container">
+            <form class="styledForm" th:action="@{/addProduct}" th:object="${newProduct}" method="post" onsubmit="return validatePriceAndSize(this.price, this.size)">
+                <h2>Додати товар на склад</h2>
+                <label class="field">Найменування товару:</label><input th:field="*{productName}" required pattern="^[a-zA-Zа-яёА-ЯЁіїєІЇЄ'0-9 ]+$" onblur="validate(this, 'Найменування має містити лише літери, цифри та пробіл')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)">
+                <label class="field">Торгова марка:</label><input th:field="*{trademark}" pattern="^[a-zA-Zа-яёА-ЯЁіїєІЇЄ'0-9 -]+$" onblur="validate(this, 'Торгова марка має містити лише літери, цифри та пробіл')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)">
+                <label class="field">Ціна:</label><input th:field="*{price}" required pattern="^[0-9]+\.\d{1,2}$" onblur="validate(this, 'Ціна повинна мати формат (гривні).(копійки) та бути більше 0.00')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)">
+                <label class="field">Категория:</label><select th:field="*{category}" size=1 required onblur="validate(this, 'Оберіть категорію!')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)">
+                                                <option value="" hidden="hidden">Обрати категорію</option>
+                                                <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Category).BAKERY}">Хлібобулочні вироби</option>
+                                                <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Category).FRUIT_VEGETABLES}">Овочі та фрукти</option>
+                                                <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Category).FROZEN_FOOD}">Заморожена продукція</option>
+                                                <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Category).DAIRY_PRODUCTS}">Молочна продукція</option>
+                                                <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Category).MEAT}">М&#39;ясо</option>
+                                                <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Category).ALCOHOL}">Алкоголь</option>
+                                            </select>
+                <label class="field">Об&#39;єм:</label><input th:field="*{size}" required pattern="^\d*\.\d{1,3}\D{1,2}$" onblur="validate(this, 'Показник об`єму повинен мати відповідний формат. Наприклад, 1.0кг, 0.75л')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)">
+                <label class="field">Кількість на складі:</label><input th:field="*{amount}" required pattern="^[0-9]+$" onblur="validate(this, 'Поле має містити лише цифри')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)">
+                <input type="submit" value="Додати" onclick="callValidityReport()">
+            </form>
+            <a href="javascript:history.back()">
+                <div class="navButton" tabindex="0">
+                    <label>Назад</label>
+                </div>
+            </a>
+        </div>
+    </body>
+</html>

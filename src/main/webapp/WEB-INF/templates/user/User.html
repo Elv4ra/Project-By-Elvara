@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html lang="uk" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Сторінка Користувача</title>
+        <link th:href="@{/resources/css/main.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/header.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/formStyling.css}" rel="stylesheet">
+        <script th:src="@{/resources/js/fieldValidation.js}"></script>
+        <script th:if="${message}" th:inline="javascript">
+            var message = /*[[${message}]]*/;
+            alert(message);
+        </script>
+    </head>
+    <body>
+        <div th:replace="fragments/Header.html :: header"></div>
+        <div class="container">
+            <form class="styledForm" th:action="@{/updateUserInfo(id=${user.id})}" th:object="${user}" method="post">
+                <h2>Редагування персональних даних</h2>
+                <label class="field">Пошта:</label><input th:field="*{email}" th:attr="value=${user.email}" required readonly="readonly"/>
+                <input type="hidden" th:field="*{userPassword}" th:attr="value=${user.userPassword}">
+                <label class="field">Ім&#39;я:</label><input th:field="*{firstName}" th:attr="value=${user.firstName}" required pattern="[a-zA-Zа-яёА-ЯЁіїєІЇЄ']+$" onblur="validate(this, 'Ім`я не має містити цифр, пробілів чи спеціальних символів')" onfocus="dropStyle(this)" th:readonly="${#authentication.principal.user.id != user.id}">
+                <label class="field">Прізвище:</label><input th:field="*{lastName}" th:attr="value=${user.lastName}" required pattern="[a-zA-Zа-яёА-ЯЁіїєІЇЄ']+$" onblur="validate(this, 'Прізвище не має містити цифр, пробілів чи спеціальних символів')"  onfocus="dropStyle(this)" th:readonly="${#authentication.principal.user.id != user.id}">
+                <label class="field">Номер телефону:</label><input th:field="*{phone}" th:attr="value=${user.phone}" required pattern="^\+?(\d{10}|\d{12})$" onblur="validate(this, 'Номер телефону має формат +(код)ХХХХХХХХХ')"  onfocus="dropStyle(this)" th:readonly="${#authentication.principal.user.id != user.id}">
+                <label class="field">Тип користувача:</label><select th:field="*{userRole}" size=1 required th:disabled="${#authentication.principal.user.userRole != T(com.ProjectByElvara.entities.additionalClasses.UserRole).ROLE_ADMIN}">
+                                                    <option th:selected="${user.userRole == T(com.ProjectByElvara.entities.additionalClasses.UserRole).ROLE_ADMIN}" th:value="${T(com.ProjectByElvara.entities.additionalClasses.UserRole).ROLE_ADMIN}">Адмін</option>
+                                                    <option th:selected="${user.userRole == T(com.ProjectByElvara.entities.additionalClasses.UserRole).ROLE_CLIENT}" th:value="${T(com.ProjectByElvara.entities.additionalClasses.UserRole).ROLE_CLIENT}">Клієнт</option>
+                                                </select>
+                <input type="hidden" th:field="*{userRole}" th:attr="value=${user.userRole.label}" th:if="${#authentication.principal.user.userRole == T(com.ProjectByElvara.entities.additionalClasses.UserRole).ROLE_CLIENT}">
+                <input type="submit" value="Редагувати профіль">
+            </form>
+            <form th:if="${#authentication.principal.user.id == user.id}" class="styledForm" th:action="@{/updateUserPassword(id=${user.id})}" th:object="${user}" method="post">
+                <h2>Редагування пароля</h2>
+                <label class="field">Старий пароль:</label><input type="password" name="oldPassword" required pattern="[a-zA-Z0-9.!@#$%^&*_]+$" onblur="validate(this, 'Пароль має складатися з латинських літер, цифр та символів .!@#$%^&*_')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)">
+                <label class="field">Новий пароль:</label><input type="password" name="newPassword" required pattern="[a-zA-Z0-9.!@#$%^&*_]+$" onblur="validate(this, 'Пароль має складатися з латинських літер, цифр та символів .!@#$%^&*_')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)">
+                <input type="submit" value="Змінити пароль">
+            </form>
+            <form class="styledForm" th:action="@{/deleteUser}" method="post" th:if="${user.userRole != T(com.ProjectByElvara.entities.additionalClasses.UserRole).ROLE_ADMIN}">
+                <h2>Видалення профілю</h2>
+                <label class="field">Введіть пошту, щоб підтвердити видалення</label>
+                <input required name="email" th:attr="onblur=|validateEmail(this, 'Неправильно заповнене поле', '${user.email}')|"  onfocus="dropStyle(this)">
+                <input type="submit" value="Видалити профіль" th:attr="onclick=|return confirm('Видалити користувача з поштой ${user.email}?')|">
+            </form>
+            <a th:href="@{/orders(userId=${user.id})}" sec:authorize="hasRole('ROLE_ADMIN')" th:if="${user.userRole != T(com.ProjectByElvara.entities.additionalClasses.UserRole).ROLE_ADMIN}">
+                <div class="navButton" tabindex="0">
+                    <label>Замовлення користувача</label>
+                </div>
+            </a>
+            <a href="javascript:history.back()" sec:authorize="hasRole('ROLE_ADMIN')">
+                <div class="navButton" tabindex="0">
+                    <label>Назад</label>
+                </div>
+            </a>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,16 @@
+.outerContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+.outerContainer h2 {
+    font-size: 1.8em;
+    -webkit-text-stroke: 0.75px rgba(255,0,200,1);
+    color: rgba(255, 0, 200, 0.25);
+}
+.managementContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 60px;
+}

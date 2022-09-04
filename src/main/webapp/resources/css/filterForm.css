@@ -1,0 +1,45 @@
+.filterForm {
+    width: 27%;
+}
+.filterForm input, select {
+    display: inline;
+    width: 100%;
+    padding: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 1);
+    outline: 1px solid rgba(0, 200, 255, 1);
+    border-radius: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.filterForm input:hover, select:hover {
+    outline: 2px solid rgba(0, 150, 255, 1);
+}
+.filterForm input:focus, select:focus {
+    outline: 2px solid rgba(255, 0, 200, 1);
+}
+.filterForm input[type=submit], input[type=button] {
+    width: 48.9%;
+    margin-top: 5px;
+    margin-right: 1.4px;
+    color: rgba(255, 0, 200, 1);
+    background-color: rgba(0, 200, 255, 0.25);
+    outline: 1px solid rgba(0, 200, 255, 1);
+    border-radius: 5px;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+}
+.filterForm input[type=submit]:hover, input[type=button]:hover {
+    outline: 2px solid rgba(0, 150, 255, 1);
+}
+.filterForm input[type=submit]:focus, input[type=button]:focus {
+    background-color: rgba(0, 200, 255, 1);
+}
+#absentProduct {
+    margin-top: 20px;
+}
+#absentProduct p {
+    font-size: 1.3em;
+    color: rgba(255, 0, 0, 1);
+}

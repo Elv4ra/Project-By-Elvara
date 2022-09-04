@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:ctx="http://www.springframework.org/schema/context"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security-5.7.xsd">
+
+    <ctx:component-scan base-package="com.ProjectByElvara"/>
+
+    <sec:http>
+        <sec:csrf disabled="true"/>
+        <sec:intercept-url pattern="/signup" access="isAnonymous"/>
+        <sec:intercept-url pattern="/login" method="GET" access="isAnonymous"/>
+
+        <sec:intercept-url pattern="/products" access="permitAll"/>
+        <sec:intercept-url pattern="/product" access="permitAll"/>
+
+        <sec:intercept-url pattern="/user" access="isAuthenticated"/>
+        <sec:intercept-url pattern="/updateUserInfo" access="isAuthenticated"/>
+        <sec:intercept-url pattern="/updateUserPassword" access="isAuthenticated"/>
+        <sec:intercept-url pattern="/deleteUser" access="isAuthenticated"/>
+        <sec:intercept-url pattern="/orders" access="isAuthenticated"/>
+        <sec:intercept-url pattern="/order" access="isAuthenticated"/>
+        <sec:intercept-url pattern="/updateOrderStatus" access="isAuthenticated"/>
+
+        <sec:intercept-url pattern="/users" access="hasRole('ROLE_ADMIN')"/>
+        <sec:intercept-url pattern="/addProduct" access="hasRole('ROLE_ADMIN')"/>
+        <sec:intercept-url pattern="/changeProductStatus" access="hasRole('ROLE_ADMIN')"/>
+        <sec:intercept-url pattern="/updateProduct" access="hasRole('ROLE_ADMIN')"/>
+
+        <sec:intercept-url pattern="/addToCart" access="hasRole('ROLE_CLIENT')"/>
+        <sec:intercept-url pattern="/removeFromCart" access="hasRole('ROLE_CLIENT')"/>
+        <sec:intercept-url pattern="/cart" access="hasRole('ROLE_CLIENT')"/>
+        <sec:intercept-url pattern="/addOrder" access="hasRole('ROLE_CLIENT')"/>
+        <sec:form-login
+            login-page="/login"
+            authentication-failure-url="/loginFailure"
+            username-parameter="email"
+            default-target-url="/products"/>
+        <sec:logout
+            logout-url="/logout"
+            logout-success-url="/login"/>
+    </sec:http>
+
+    <sec:authentication-manager>
+        <sec:authentication-provider user-service-ref="myUserDetailsService">
+            <sec:password-encoder ref="passwordEncoder"/>
+        </sec:authentication-provider>
+    </sec:authentication-manager>
+
+    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+        <constructor-arg value="11"/>
+    </bean>
+</beans>

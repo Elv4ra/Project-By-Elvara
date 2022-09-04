@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html lang="uk" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Сторінка Товару</title>
+        <link th:href="@{/resources/css/main.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/header.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/formStyling.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/managingContainer.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/modalWindow.css}" rel="stylesheet">
+        <script th:src="@{/resources/js/productBuying.js}"></script>
+        <script th:if="${message}" th:inline="javascript">
+            var message = /*[[${message}]]*/;
+            alert(message);
+        </script>
+    </head>
+    <body>
+        <div th:replace="fragments/Header.html :: header"></div>
+        <div th:replace="fragments/ModalProductAdding.html :: modalProductAdding"></div>
+        <div class="outerContainer">
+            <div class="container">
+                <h2>Товар #<label th:text="${product.id}"></label></h2>
+                <div class="entityContainer">
+                    <p>Товар: <label th:text="${product.productName}"></label></p>
+                    <p th:if="${product.trademark != ''}">Торгова марка: <label th:text="${product.trademark}"></label></p>
+                    <p>Ціна: <label th:text="${#numbers.formatDecimal(product.price, 1, 2)}"></label><label>&#8372;</label></p>
+                    <p>Категорія: <label th:text="${product.category.label}"></label></p>
+                    <p>Об&#39;єм: <label th:text="${product.size}"></label></p>
+                    <p sec:authorize="hasRole('ROLE_ADMIN')">Кількість: <label th:text="${product.amount}"></label></p>
+                </div>
+                <a th:if="${message}" th:href="@{/products}">
+                    <div class="navButton" tabindex="0">
+                        <label>Назад</label>
+                    </div>
+                </a>
+                <a th:unless="${message}" href="javascript:history.back()">
+                    <div class="navButton" tabindex="0">
+                        <label>Назад</label>
+                    </div>
+                </a>
+            </div>
+            <div class="managementContainer">
+                <div class="navButton" onclick="callModal()" sec:authorize="hasRole('ROLE_CLIENT')" tabindex="0">
+                    <label>Додати до кошика</label>
+                </div>
+                <a th:href="@{/updateProduct(id=${product.id})}" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <div class="navButton"  tabindex="0">
+                        <label>Редагувати товар</label>
+                    </div>
+                </a>
+                <a th:href="@{/changeProductStatus(id=${product.id})}" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <div class="navButton" th:attr="onclick=|return confirm('Заархівувати товар ${product.productName} ${product.trademark} ${product.size}?')|"  tabindex="0" th:if="${product.status == T(com.ProjectByElvara.entities.additionalClasses.ProductStatus).ACTIVE}">
+                        <label>Заархівувати товар</label>
+                    </div>
+                    <div class="navButton" th:attr="onclick=|return confirm('Розархівувати товар ${product.productName} ${product.trademark} ${product.size}?')|"  tabindex="0" th:if="${product.status == T(com.ProjectByElvara.entities.additionalClasses.ProductStatus).ARCHIVED}">
+                        <label>Розархівувати товар</label>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </body>
+</html>

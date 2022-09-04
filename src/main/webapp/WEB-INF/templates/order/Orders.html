@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html lang="uk" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Усі замовлення</title>
+        <link th:href="@{/resources/css/main.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/header.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/filterForm.css}" rel="stylesheet">
+        <script th:src="@{/resources/js/fieldValidation.js}"></script>
+        <script th:if="${message}" th:inline="javascript">
+            var message = /*[[${message}]]*/;
+            alert(message);
+        </script>
+    </head>
+    <body>
+        <div th:replace="fragments/Header.html :: header"></div>
+        <div class="container">
+            <h2>Замовлення</h2>
+            <form class="filterForm" th:action="@{/orders}" method="get" name="myForm">
+                <select name="status" size=1 required onfocus="dropStyle(this)">
+                    <option value="" disabled hidden th:selected="${status == null}">Оберіть статус</option>
+                    <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).ACCEPTED}" th:selected="${status == T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).ACCEPTED}">Прийнято</option>
+                    <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).REJECTED}" th:selected="${status == T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).REJECTED}">Відхилено</option>
+                    <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).CANCELLED}" th:selected="${status == T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).CANCELLED}">Скасовано</option>
+                    <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).DONE}" th:selected="${status == T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).DONE}">Виконано</option>
+                </select>
+                <input type="submit" value="Фільтрувати" onclick="validateFilter(document.myForm.category, 'Оберіть статус!')">
+                <a th:href="@{/orders}">
+                    <input type="button" value="Скинути">
+                </a>
+            </form>
+            <div class="notFound" th:if="${#lists.isEmpty(orders)}">
+                <h3>Замовлень не знайдено</h3>
+            </div>
+            <div th:unless="${#lists.isEmpty(orders)}">
+                <a th:href="@{/order(id=${order.id})}" th:each="order : ${orders}">
+                    <div class="entityContainer"  tabindex="0">
+                        <p sec:authorize="hasRole('ROLE_ADMIN')">Користувач: <label th:text="${order.user.email}"></label></p>
+                        <p>Номер замовлення: <label th:text="${order.id}"></label></p>
+                        <p>Спосіб оплати: <label th:text="${order.payment.label}"></label></p>
+                        <p>Спосіб доставки: <label th:text="${order.delivery.label}"></label></p>
+                        <p th:if="${order.delivery == T(com.ProjectByElvara.entities.additionalClasses.Delivery).DELIVERY}">Адреса: <label th:text="${order.address}"></label></p>
+                        <p>Статус замовлення: <label th:text="${order.status.label}"></label></p>
+                        <p>Останні зміни: <label th:text="${#dates.format(order.updateTime, 'dd.MM.yy HH:mm')}"></label></p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </body>
+</html>

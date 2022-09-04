@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html lang="uk" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Авторизація</title>
+        <link th:href="@{/resources/css/main.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/header.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/formStyling.css}" rel="stylesheet">
+        <script th:src="@{/resources/js/fieldValidation.js}"></script>
+        <script th:if="${message}" th:inline="javascript">
+            var message = /*[[${message}]]*/;
+            alert(message);
+        </script>
+    </head>
+    <body>
+        <div th:replace="fragments/Header.html :: header"></div>
+        <div class="container">
+            <form class="styledForm" th:action="@{/login}" method="post">
+                <h2>Увійти</h2>
+                <label class="field">Пошта:</label><input name="email" required placeholder="Пошта" autofocus="autofocus">
+                <label class="field">Пароль:</label><input type="password" name="password" required placeholder="Ввеідть пароль">
+                <input type="submit" value="Увійти">
+            </form>
+        </div>
+    </body>
+</html>

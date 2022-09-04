@@ -1,0 +1,45 @@
+version: "2.1"
+services:
+  mysql-db:
+    image: mysql/mysql-server:latest
+    container_name: mysql-db-container
+    volumes:
+          - ./database:/docker-entrypoint-initdb.d
+    networks:
+      - project-by-elvara-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=supermarket_db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pass
+      - LANG=C.UTF-8
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 10s
+      retries: 6
+
+  web-service:
+    image: elvara/project-by-elvara:latest
+    container_name: project-by-elvara-container
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_DATABASE_USERNAME=user
+      - APP_DATABASE_PASSWORD=pass
+      - APP_DATABASE_URL=jdbc:mysql://mysql-db:3306/supermarket_db
+      - TZ=Europe/Kiev
+      - ADMIN_ACCOUNT_EMAIL=admin@admin.com
+      - ADMIN_ACCOUNT_PASSWORD=admin
+      - ADMIN_ACCOUNT_NAME=Dante
+      - ADMIN_ACCOUNT_SURNAME=Alighieri
+      - ADMIN_ACCOUNT_PHONE=+380639999999
+    networks:
+      - project-by-elvara-network
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+
+networks:
+  project-by-elvara-network:

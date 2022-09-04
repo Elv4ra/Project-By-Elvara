@@ -1,0 +1,17 @@
+<div id="myModal" class="modal" th:fragment="modalOrderCreation">
+    <form class="modal-content styledForm" th:action="@{/addOrder}" th:object="${newOrder}" method="post" name="myForm">
+        <input type="hidden" id="status" name="status" th:value="${T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).ACCEPTED}">
+        <label class="field">Спосіб оплати:</label><select  th:field="*{payment}" size=1 required onblur="validate(this, 'Оберіть спосіб оплати!')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)">
+                                        <option value="" hidden="hidden">Обрати спосіб оплати</option>
+                                        <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Payment).CASH}">Готівка</option>
+                                        <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Payment).CARD}">Картка</option>
+                                    </select>
+        <label class="field">Спосіб доставки:</label><select th:field="*{delivery}" size=1 required onblur="validate(this, 'Оберіть спосіб доставки!')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)" onchange="showAddress();">
+                                            <option value="" hidden="hidden">Обрати спосіб доставки</option>
+                                            <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Delivery).DELIVERY}">Доставка</option>
+                                            <option th:value="${T(com.ProjectByElvara.entities.additionalClasses.Delivery).PICKUP}">Самовивіз</option>
+                                        </select>
+        <label id="displayableLabel" class="field" style="display: none;">Адреса:</label><input style="display: none;" disabled="disabled" th:field="*{address}" pattern="[0-9a-zA-Zа-яёА-ЯЁіїєІЇЄ'., -]+$" onblur="validate(this, 'Адреса не має містити спеціальних символів')" onfocus="dropStyle(this)" oninput="removeValidationMessage(this)">
+        <input type="submit" value="Придбати" onclick="callValidityReport()">
+    </form>
+</div>

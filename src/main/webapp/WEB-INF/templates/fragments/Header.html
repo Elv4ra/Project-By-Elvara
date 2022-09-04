@@ -1,0 +1,20 @@
+<div class="myHeader" th:fragment="header">
+    <div class="siteName">
+        <h1>Project</h1>
+    </div>
+    <div class="navbar">
+        <nav>
+            <ul>
+                <li><a th:href="@{/products}"><div tabindex="0">Товари</div></a></li>
+                <li sec:authorize="hasRole('ROLE_CLIENT')"><a th:href="@{/cart}"><div tabindex="0">Кошик</div></a></li>
+                <li sec:authorize="hasRole('ROLE_CLIENT')"><a th:href="@{/orders(userId=${#authentication.principal.user.id})}"><div tabindex="0">Мої Замовлення</div></a></li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/users}"><div tabindex="0">Користувачі</div></a></li>
+                <li sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/orders}"><div tabindex="0">Замовлення</div></a></li>
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/user(id=${#authentication.principal.user.id})}"><div tabindex="0" th:text="${#authentication.principal.user.firstName}"></div></a></li>
+                <li sec:authorize="isAuthenticated()"><a th:href="@{/logout}"><div tabindex="0">Вийти</div></a></li>
+                <li sec:authorize="isAnonymous()"><a th:href="@{/signup}"><div tabindex="0">Реєстрація</div></a></li>
+                <li sec:authorize="isAnonymous()"><a th:href="@{/login}"><div tabindex="0">Увійти</div></a></li>
+            </ul>
+        </nav>
+    </div>
+</div>

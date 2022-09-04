@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html lang="uk" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Замовлення</title>
+        <link th:href="@{/resources/css/main.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/header.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/formStyling.css}" rel="stylesheet">
+        <link th:href="@{/resources/css/table.css}" rel="stylesheet">
+        <script th:if="${message}" th:inline="javascript">
+            var message = /*[[${message}]]*/;
+            alert(message);
+        </script>
+    </head>
+    <body>
+        <div th:replace="fragments/Header.html :: header"></div>
+        <div class="container">
+            <form class="styledForm" th:action="@{/updateOrderStatus}" method="post" onsubmit="return confirm('Змінити статус замовлення на &quot;' + this.status.options[this.status.selectedIndex].text + '&quot;?');">
+                <h2>Замовлення #<label th:text="${order.id}"></label></h2>
+                <div class="orderContainer">
+                    <p sec:authorize="hasRole('ROLE_ADMIN')">Користувач: <label th:text="${order.user.firstName} + ' ' + ${order.user.lastName} + ' (' + ${order.user.email} + ')'"></label></p>
+                    <p>Спосіб оплати: <label th:text="${order.payment.label}"></label></p>
+                    <p>Спосіб доставки: <label th:text="${order.delivery.label}"></label></p>
+                    <p th:if="${order.delivery == T(com.ProjectByElvara.entities.additionalClasses.Delivery).DELIVERY}">Адреса: <label th:text="${order.address}"></label></p>
+                    <p>Останні зміни: <label th:text="${#dates.format(order.updateTime, 'dd.MM.yy HH:mm')}"></label></p>
+                    <p sec:authorize="hasRole('ROLE_CLIENT')">Статус замовлення: <label th:text="${order.status.label}"></label></p>
+                </div>
+                <label class="field" sec:authorize="hasRole('ROLE_ADMIN')">Статус замовлення: </label>
+                <select sec:authorize="hasRole('ROLE_ADMIN')" name="status" size=1 th:disabled="${order.status == T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).CANCELLED}">
+                        <option th:selected="${order.status == T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).ACCEPTED}" th:value="${T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).ACCEPTED}">Прийнято</option>
+                        <option th:selected="${order.status == T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).REJECTED}" th:value="${T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).REJECTED}">Відхилено</option>
+                        <option hidden="hidden" th:selected="${order.status == T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).CANCELLED}">Скасовано</option>
+                        <option th:selected="${order.status == T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).DONE}" th:value="${T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).DONE}">Виконано</option>
+                   </select>
+                <table>
+                    <caption>Рахунок</caption>
+                    <tr>
+                        <th>Назва товару</th>
+                        <th class="center">К-сть</th>
+                        <th class="center">Ціна</th>
+                        <th class="center">Вартість</th>
+                    </tr>
+                    <tr th:each="product : ${order.products}">
+                        <td th:text="${product.productName} + ' ' + ${product.trademark} + ' ' + ${product.size}"></td>
+                        <td class="center" th:text="${product.amount}"></td>
+                        <td class="price" th:text="${#numbers.formatDecimal(product.price, 1, 2)} + &#8372;"></td>
+                        <td class="price" th:text="${#numbers.formatDecimal(product.price * product.amount, 1, 2)} + &#8372;"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">Всього</td>
+                        <td class="price" th:text="${#numbers.formatDecimal(order.getTotal, 1, 2)} + &#8372;"></td>
+                    </tr>
+                </table>
+                <input type="hidden" name="orderId" th:value="${order.id}">
+                <input th:if="${order.status == T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).ACCEPTED and #authorization.expression('hasRole(''ROLE_CLIENT'')')}" type="hidden" name="status" th:value="${T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).CANCELLED}">
+                <input th:if="${order.status == T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).ACCEPTED and #authorization.expression('hasRole(''ROLE_CLIENT'')')}" type="submit" value="Скасувати замовлення">
+                <input th:if="${order.status != T(com.ProjectByElvara.entities.additionalClasses.OrderStatus).CANCELLED and #authorization.expression('hasRole(''ROLE_ADMIN'')')}" type="submit" value="Змінити статус">
+            </form>
+            <a th:href="@{/orders}" sec:authorize="hasRole('ROLE_ADMIN')">
+                <div class="navButton" tabindex="0">
+                    <label>Назад</label>
+                </div>
+            </a>
+            <a th:href="@{/orders(userId=${#authentication.getPrincipal().getUser().getId()})}" sec:authorize="hasRole('ROLE_CLIENT')">
+                <div class="navButton" tabindex="0">
+                    <label>Назад</label>
+                </div>
+            </a>
+        </div>
+    </body>
+</html>
