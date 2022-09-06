@@ -24,17 +24,18 @@ services:
     image: elvara/project-by-elvara:latest
     container_name: project-by-elvara-container
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       - APP_DATABASE_USERNAME=user
       - APP_DATABASE_PASSWORD=pass
       - APP_DATABASE_URL=jdbc:mysql://mysql-db:3306/supermarket_db
-      - TZ=Europe/Kiev
       - ADMIN_ACCOUNT_EMAIL=admin@admin.com
       - ADMIN_ACCOUNT_PASSWORD=admin
       - ADMIN_ACCOUNT_NAME=Dante
       - ADMIN_ACCOUNT_SURNAME=Alighieri
       - ADMIN_ACCOUNT_PHONE=+380639999999
+      - SPRING_PROFILES_ACTIVE=JPA
+      - TZ=Europe/Kiev
     networks:
       - project-by-elvara-network
     depends_on:

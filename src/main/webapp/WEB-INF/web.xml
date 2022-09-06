@@ -42,12 +42,6 @@
     </listener>
 
     <context-param>
-        <param-name>spring.profiles.active</param-name>
-<!--        <param-value>JDBC</param-value>-->
-        <param-value>JPA</param-value>
-    </context-param>
-
-    <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
             /WEB-INF/JpaConfig.xml
