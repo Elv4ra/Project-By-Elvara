@@ -5,7 +5,7 @@ import com.ProjectByElvara.configs.enums.Pages;
 import com.ProjectByElvara.dto.OrderDTO;
 import com.ProjectByElvara.entities.additionalClasses.OrderStatus;
 import com.ProjectByElvara.entities.additionalClasses.UserRole;
-import com.ProjectByElvara.services.MyUserDetailsService;
+import com.ProjectByElvara.security.MyUserDetailsService;
 import com.ProjectByElvara.services.OrderService;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;

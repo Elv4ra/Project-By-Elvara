@@ -14,12 +14,14 @@
         http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+	<import resource="JdbcConfig.xml"/>
+	<import resource="JpaConfig.xml"/>
+	<import resource="SecurityConfig.xml"/>
+
     <ctx:annotation-config/>
-    <ctx:component-scan base-package="com.ProjectByElvara.*"/>
-    <ctx:property-placeholder location="classpath:application.properties"/>
+    <ctx:component-scan base-package="com.ProjectByElvara.controllers, com.ProjectByElvara.services, com.ProjectByElvara.mapper, com.ProjectByElvara.dto, com.ProjectByElvara.configs"/>
     <mvc:resources mapping="/resources/**" location="/resources/"/>
     <mvc:annotation-driven/>
-    <tx:annotation-driven transaction-manager="txManager"/>
 
     <bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
         <property name="prefix" value="/WEB-INF/templates/" />

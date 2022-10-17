@@ -11,7 +11,7 @@
         http://www.springframework.org/schema/security
         http://www.springframework.org/schema/security/spring-security-5.7.xsd">
 
-    <ctx:component-scan base-package="com.ProjectByElvara"/>
+    <ctx:component-scan base-package="com.ProjectByElvara.security"/>
 
     <sec:http>
         <sec:csrf disabled="true"/>
