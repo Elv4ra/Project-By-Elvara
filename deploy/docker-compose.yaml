@@ -24,7 +24,7 @@ services:
     image: elvara/project-by-elvara:latest
     container_name: project-by-elvara-container
     ports:
-      - "8081:8080"
+      - "8080:8080"
     environment:
       - APP_DATABASE_USERNAME=user
       - APP_DATABASE_PASSWORD=pass
